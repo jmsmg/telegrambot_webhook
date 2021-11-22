@@ -1,10 +1,11 @@
 import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
+import os # lambda 환경변수
 
 # 변수 설정 시작 #
 
 TELEGRAM_API_HOST = 'api.telegram.org' # 호스트 주소
-TOKEN = '##'
+TOKEN = os.environ['TOKEN']
 
 # 변수 설정 끝 #
 
@@ -18,8 +19,8 @@ headers = {'content-type' : 'application/json'}
 
 # 파라미터 #
 param = {
-    'chat_id':'###',
-    'text':'hello'
+    'chat_id' : os.environ['CHAT_ID'],
+    'text' : 'hello'
 }
 
 # http #
@@ -37,5 +38,5 @@ print(json.dumps(json.loads(res.read().decode()), indent=4))
 print('상태코드 : ', res.status)
 print('메시지 : ', res.msg)
 
-# 연결 종료 #
+# 강제 연결 종료 (비정상적인 요청 대비)#
 connection.close()
