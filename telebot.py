@@ -7,7 +7,7 @@ import os # lambda 환경변수
 TELEGRAM_API_HOST = 'api.telegram.org' # 호스트 주소
 TOKEN = os.environ['TOKEN']
 URL = f'/bot{TOKEN}'
-headers = {'content-type' : 'application/json'}
+HEADERS = {'content-type' : 'application/json'}
 connection = http.client.HTTPSConnection(TELEGRAM_API_HOST) # 호스트 주소 접속 객체 생성
 # 전역변수 설정 끝 #
 
@@ -17,19 +17,32 @@ def lambda_handler(event, context):
     # 파라미터 #
     param = {
         'chat_id' : os.environ['CHAT_ID'],
-        'text' : request_body['message']['text']
+        'text' : '테이블판',
+        "reply_markup": {
+            "inline_keyboard": [[
+                {
+                    "text": "VIP",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "B",
+                    "callback_data": "C1"            
+                }]
+            ]
+        }
     }
 
     ## 요청 ##
-    connection.request('POST', f'{URL}/sendMessage', json.dumps(param) , headers)
+    if request_body['message']['text'] == '/table':
+        connection.request('POST', f'{URL}/sendMessage', json.dumps(param) , HEADERS)
     ## 요청 끝 ##
 
     ## 응답 ##
-    res = connection.getresponse()
+        res = connection.getresponse()
     ## 응답 끝 ##
 
     # 강제 연결 종료 (비정상적인 요청 대비)#
-    connection.close()
+        connection.close()
     
     return {
         'statusCode': 200,
