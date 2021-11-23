@@ -23,9 +23,46 @@ def lambda_handler(event, context):
                 {
                     "text": "VIP",
                     "callback_data": "A1"            
+                }
+            ],
+            [
+                {
+                    "text": "1",
+                    "callback_data": "A1"            
                 }, 
                 {
-                    "text": "B",
+                    "text": "2",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "3",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "4",
+                    "callback_data": "C1"            
+                }], 
+                [
+                {
+                    "text": "Booth",
+                    "callback_data": "A1"            
+                }
+            ],
+            [
+                {
+                    "text": "1",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "2",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "3",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "4",
                     "callback_data": "C1"            
                 }]
             ]
