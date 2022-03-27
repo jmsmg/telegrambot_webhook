@@ -19,7 +19,10 @@ class Bot:
         """
         self._URL = _URL
 
-    def send_message(self, teleRes:json) -> None:
+    def send_message(self, command:string) -> None:
+        """
+        명령어에 맞춰서 문자를 반환하는 함수
+        """
         param = {
             'chat_id' : os.environ['CHAT_ID'],
             'text' : '테이블판',
@@ -37,7 +40,7 @@ class Bot:
             }
         }
 
-        if teleRes['message']['text'] == '/table':
+        if command == '/table':
             _CONNECTION.request('POST', f'{_URL}/sendMessage', json.dumps(param) , _HEADERS)
 
         # 응답
@@ -45,3 +48,22 @@ class Bot:
 
         # 강제 연결 종료 (비정상적인 요청 대비)#
             _CONNECTION.close()
+
+    def send_photo(self, command:string) -> None:
+        """
+        명령어에 맞춰서 사진 반환하는 함수
+        """
+        param = {
+            'chat_id' : os.environ['CHAT_ID'],
+            'photo' : 'https://avatars.githubusercontent.com/u/77792994?v=4'
+        }
+
+        if command == '/photo':
+            _CONNECTION.request('POST', f'{_URL}/sendPhoto', json.dumps(param) , _HEADERS)
+
+        # 응답
+            res = _CONNECTION.getresponse()
+
+        # 강제 연결 종료 (비정상적인 요청 대비)#
+            _CONNECTION.close()
+    
