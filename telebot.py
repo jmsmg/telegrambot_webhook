@@ -6,7 +6,7 @@ import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
 import os
 
-_TELEGRAM_API_HOST = "api.telegram.org/" # 호스트 주소
+_TELEGRAM_API_HOST = "api.telegram.org" # 호스트 주소
 _TOKEN = os.environ['TOKEN']
 _URL = f'/bot{_TOKEN}'
 _HEADERS = {'content-type' : 'application/json'}
