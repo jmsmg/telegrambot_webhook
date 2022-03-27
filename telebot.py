@@ -1,50 +1,47 @@
+"""
+텔레그램 봇 객체
+"""
+
 import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
-import os # lambda 환경변수
+import os
 
+_TELEGRAM_API_HOST = "api.telegram.org/" # 호스트 주소
+_TOKEN = os.environ['TOKEN']
+_URL = f'/bot{_TOKEN}'
+_HEADERS = {'content-type' : 'application/json'}
+_CONNECTION = http.client.HTTPSConnection(_TELEGRAM_API_HOST) # 호스트 주소 접속 객체 생성
 
-# 전역변수 설정 시작 #
-TELEGRAM_API_HOST = 'api.telegram.org' # 호스트 주소
-TOKEN = os.environ['TOKEN']
-URL = f'/bot{TOKEN}'
-HEADERS = {'content-type' : 'application/json'}
-connection = http.client.HTTPSConnection(TELEGRAM_API_HOST) # 호스트 주소 접속 객체 생성
-# 전역변수 설정 끝 #
+class Bot:
+    def __init__(self):
+        """
+        인스턴스 초기화
+        """
+        self._URL = _URL
 
-def lambda_handler(event, context):
-
-    request_body = json.loads(event['body'])
-    # 파라미터 #
-    param = {
-        'chat_id' : os.environ['CHAT_ID'],
-        'text' : '테이블판',
-        "reply_markup": {
-            "inline_keyboard": [[
-                {
-                    "text": "VIP",
-                    "callback_data": "A1"            
-                }, 
-                {
-                    "text": "B",
-                    "callback_data": "C1"            
-                }]
-            ]
+    def send_message(self, teleRes:json) -> None:
+        param = {
+            'chat_id' : os.environ['CHAT_ID'],
+            'text' : '테이블판',
+            "reply_markup": {
+                "inline_keyboard": [[
+                    {
+                        "text": "VIP",
+                        "callback_data": "A1"            
+                    }, 
+                    {
+                        "text": "B",
+                        "callback_data": "C1"            
+                    }]
+                ]
+            }
         }
-    }
 
-    ## 요청 ##
-    if request_body['message']['text'] == '/table':
-        connection.request('POST', f'{URL}/sendMessage', json.dumps(param) , HEADERS)
-    ## 요청 끝 ##
+        if teleRes['message']['text'] == '/table':
+            _CONNECTION.request('POST', f'{_URL}/sendMessage', json.dumps(param) , _HEADERS)
 
-    ## 응답 ##
-        res = connection.getresponse()
-    ## 응답 끝 ##
+        # 응답
+            res = _CONNECTION.getresponse()
 
-    # 강제 연결 종료 (비정상적인 요청 대비)#
-        connection.close()
-    
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
+        # 강제 연결 종료 (비정상적인 요청 대비)#
+            _CONNECTION.close()
