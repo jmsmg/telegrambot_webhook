@@ -18,6 +18,14 @@ class Bot:
         인스턴스 초기화
         """
         self._URL = _URL
+    
+    def get_command(self, command:str) -> None:
+        
+        if command == '/table':
+            self.send_message(command)
+    
+        elif command == '/photo':
+            self.send_photo(command)
 
     def send_message(self, command:str) -> None:
         """
@@ -49,6 +57,7 @@ class Bot:
         # 강제 연결 종료 (비정상적인 요청 대비)#
             _CONNECTION.close()
 
+
     def send_photo(self, command:str) -> None:
         """
         명령어에 맞춰서 사진 반환하는 함수
@@ -66,4 +75,3 @@ class Bot:
 
         # 강제 연결 종료 (비정상적인 요청 대비)#
             _CONNECTION.close()
-    

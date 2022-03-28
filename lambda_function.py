@@ -12,17 +12,13 @@ def lambda_handler(event, context):
 
     tele_request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
     command = tele_request['message']['text']
-
     print(tele_request)
+    
+    # 보낸사람이름 : tele_request['message']['from']['first_name'])
 
     bot = Bot()
 
-    if command == '/table':
-        bot.send_message(command)
-    
-    if command == '/photo':
-        bot.send_photo(command)
-    
+    bot.get_command(command)
     
     return {
         'statusCode': 200,
