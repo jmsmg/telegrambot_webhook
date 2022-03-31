@@ -18,18 +18,19 @@ class Bot:
         self._URL = URL
         self._command = command
 
-    def ft_response(self, respense) -> None:
+    def ft_response(self, respense, sender_name) -> None:
         """
         명령어에 맞춰서 문자를 반환하는 함수
         """
 
         with open(f'param{self._command}.json') as f:
             param = json.loads(f.read())
+            param["text"] = f"호출자 : {sender_name}"
 
         _CONNECTION.request('POST', f'{self._URL}{respense}', json.dumps(param) , _HEADERS)
 
         # 응답
         res = _CONNECTION.getresponse()
-            
+
         # 강제 연결 종료 (비정상적인 요청 대비)#
         _CONNECTION.close()
