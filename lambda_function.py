@@ -3,7 +3,10 @@
 """
 from telebot import Bot
 import json
+import os
 
+TOKEN = os.environ['TOKEN']
+URL = f'/bot{TOKEN}'
 
 def lambda_handler(event, context):
 
@@ -11,15 +14,17 @@ def lambda_handler(event, context):
     print("context :", context) # 들어오는 값 확인용
 
     tele_request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
-    command = tele_request['message']['text']
-    print(tele_request)
-    
-    # 보낸사람이름 : tele_request['message']['from']['first_name'])
+    command = tele_request["message"]["text"]
+    print(command)
 
-    bot = Bot()
+    bot = Bot(URL, command)
 
-    bot.get_command(command)
+    if command == '/table' or command == '/task' :
+        bot.ft_response("/sendMessage")
     
+    elif command == '/photo':
+        bot.ft_response("/sendPhoto")
+
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
