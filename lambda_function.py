@@ -23,7 +23,9 @@ def lambda_handler(event, context):
         bot.ft_response("/sendMessage", sender_name)
 
     elif command == '/photo':
-        bot.ft_response("/sendPhoto")
+        bot.ft_response("/sendPhoto", sender_name)
+
+    print(bot.bot_count)
 
     return {
         'statusCode': 200,
