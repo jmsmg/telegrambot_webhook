@@ -15,15 +15,17 @@ def lambda_handler(event, context):
 
     tele_request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
     command = tele_request["message"]["text"]
-    print(command)
-
+    sender_name = tele_request["message"]["from"]["first_name"]
+    
     bot = Bot(URL, command)
 
     if command == '/table' or command == '/task' :
-        bot.ft_response("/sendMessage")
-    
+        bot.ft_response("/sendMessage", sender_name)
+
     elif command == '/photo':
-        bot.ft_response("/sendPhoto")
+        bot.ft_response("/sendPhoto", sender_name)
+
+    print(bot.bot_count)
 
     return {
         'statusCode': 200,
