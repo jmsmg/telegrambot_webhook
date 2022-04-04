@@ -4,7 +4,6 @@
 
 import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
-import os
 
 _TELEGRAM_API_HOST = "api.telegram.org" # 호스트 주소
 _HEADERS = {'content-type' : 'application/json'}
@@ -12,7 +11,7 @@ _CONNECTION = http.client.HTTPSConnection(_TELEGRAM_API_HOST) # 호스트 주소
 
 class Bot:
     
-    bot_count = []
+    table_data = 0
 
     def __init__(self, URL, command):
         """
@@ -20,8 +19,8 @@ class Bot:
         """
         self._URL = URL
         self._command = command
-        Bot.bot_count.append(1)
-
+        Bot.table_data += 1
+        
     def ft_response(self, respense, sender_name) -> None:
         """
         명령어에 맞춰서 문자를 반환하는 함수
