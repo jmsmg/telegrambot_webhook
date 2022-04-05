@@ -4,7 +4,7 @@
 from telebot import Bot
 import json
 import os
-from table_db import create_db
+from table_db import Connect_db
 
 TOKEN = os.environ['TOKEN']
 URL = f'/bot{TOKEN}'
@@ -26,6 +26,11 @@ def lambda_handler(event, context):
     elif command == '/photo':
         bot.ft_response("/sendPhoto", sender_name)
 
+    # DB 연결 부분
+    
+    connect_db = Connect_db()
+    print(connect_db.read_table())
+    
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
