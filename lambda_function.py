@@ -20,14 +20,12 @@ def lambda_handler(event, context):
     
     bot = Bot(URL, command)
 
-    if command == '/table' or command == '/task' :
-        bot.ft_response("/sendMessage", sender_name)
+    method = bot.find_method()
 
-    elif command == '/photo':
-        bot.ft_response("/sendPhoto", sender_name)
+    bot.ft_response(method, sender_name)
+
 
     # DB 연결 부분
-    
     connect_db = Connect_db()
     print(connect_db.read_table())
     

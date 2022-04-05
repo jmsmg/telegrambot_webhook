@@ -17,20 +17,30 @@ class Bot:
         """
         self._URL = URL
         self._command = command
-
-    def ft_response(self, response, sender_name) -> None:
+    
+    def find_method(self):
         """
-        명령어에 맞춰서 문자를 반환하는 함수
+        명령어를 받아 그에 맞는 메소드를 찾아주는 함수
+        """
+        
+        if self._command == '/table' or self._command == '/task' :
+            return '/sendMessage'    
+        elif self._command == '/photo':
+            return '/sendPhoto'
+
+    def ft_response(self, method, sender_name) -> None:
+        """
+        메소드에 맞춰서 문자를 반환하는 함수
         """
 
         with open(f'param{self._command}.json') as f:
             param = json.loads(f.read())
             param["text"] = f"호출자 : {sender_name}"
 
-        _CONNECTION.request('POST', f'{self._URL}{response}', json.dumps(param) , _HEADERS)
+        _CONNECTION.request('POST', f'{self._URL}{method}', json.dumps(param) , _HEADERS)
 
         # 응답
-        res = _CONNECTION.getresponse()
+        # res = _CONNECTION.getresponse()
 
         # 강제 연결 종료 (비정상적인 요청 대비)#
         _CONNECTION.close()
