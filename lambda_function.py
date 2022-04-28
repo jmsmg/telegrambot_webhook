@@ -4,7 +4,6 @@
 from telebot import Bot
 import json
 import os
-from table_db import Connect_db
 
 TOKEN = os.environ['TOKEN']
 URL = f'/bot{TOKEN}'
@@ -13,31 +12,29 @@ def lambda_handler(event, context):
 
     print("event :", event) # 들어오는 값 확인용
     print("context :", context) # 들어오는 값 확인용
-    
-    tele_request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
-    print(tele_request)
 
+    request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
+    
     # json 문법 체크
-    if tele_request.get('callback_query'): # 버튼 눌렀을때
-        data = tele_request["callback_query"]["data"]
-        message_id = tele_request["callback_query"]["message"]["message_id"]
-        sender_name = tele_request["callback_query"]["from"]["first_name"]
-        command = f'button_data_{data}'
+    if request.get('callback_query'): # 버튼 눌렀을때
+        command = request["callback_query"]["data"]
+        message_id = request["callback_query"]["message"]["message_id"]
+        sender_name = request["callback_query"]["from"]["first_name"]
 
-    elif tele_request.get('message'): # 메세지를 받았을때
-        command = tele_request["message"]["text"]
-        sender_name = tele_request["message"]["from"]["first_name"]
-        
-    bot = Bot(URL)
+    elif request.get('message'): # 메세지를 받았을때
+        command = request["message"]["text"]
+        sender_name = request["message"]["from"]["first_name"]
     
-    api_method = bot.find_method(command)
-    bot.ft_response(api_method, sender_name, command)
-    # 콜백 쿼리 부분
+    # command = request["message"]["text"]
 
-    # DB 연결 부분
-    
-    connect_db = Connect_db()
-    print(connect_db.read_table())
+    bot = Bot(URL, command)
+
+    command_file = bot.check_json()
+
+    if request.get('callback_query'):
+        bot.ft_response('/editMessageText', command_file)
+    elif request.get('message'):
+        bot.ft_response("/sendMessage", command_file)
     
     return {
         'statusCode': 200,
