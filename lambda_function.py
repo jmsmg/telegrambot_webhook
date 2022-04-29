@@ -12,6 +12,7 @@ def lambda_handler(event, context):
 
     print("event :", event) # 들어오는 값 확인용
     print("context :", context) # 들어오는 값 확인용
+<<<<<<< HEAD
 
     request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
     message_id = ""
@@ -22,13 +23,28 @@ def lambda_handler(event, context):
         message_id = request["callback_query"]["message"]["message_id"]
         sender_name = request["callback_query"]["from"]["first_name"]
 
+=======
+
+    request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
+    
+    # json 문법 체크
+    if request.get('callback_query'): # 버튼 눌렀을때
+        command = request["callback_query"]["data"]
+        message_id = request["callback_query"]["message"]["message_id"]
+        sender_name = request["callback_query"]["from"]["first_name"]
+
+>>>>>>> 9fe6bcd76e6f7db54d26a10accf4f10335e213b9
     elif request.get('message'): # 메세지를 받았을때
         command = request["message"]["text"]
         sender_name = request["message"]["from"]["first_name"]
     
     # command = request["message"]["text"]
 
+<<<<<<< HEAD
     bot = Bot(URL, command, sender_name, message_id)
+=======
+    bot = Bot(URL, command)
+>>>>>>> 9fe6bcd76e6f7db54d26a10accf4f10335e213b9
 
     command_file = bot.check_json()
 
