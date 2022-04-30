@@ -26,25 +26,18 @@ class Bot:
         명령어를 받아서 json 형태로 반환해줌
         없는 명령어일시 None 반환
         """
-        if self._command == '/table':
-            command_file = answer.table
-
-        elif self._command == 'vip':
-            command_file = answer.vip_button
-        elif self._command == 'boo':
-            command_file = answer.booth_button
-        elif self._command == 'std':
-            command_file = answer.std_button
-        elif self._command == 'bar':
-            command_file = answer.bar_button
-        else:
-            command_file = None
-
+        command_file = {
+            '/table' : answer.table,
+            'vip' : answer.vip_button,
+            'boo' : answer.booth_button,
+            'std' : answer.std_button,
+            'bar' : answer.bar_button,
+            '0' : answer.cancel
+            }
+            
         # TODO 정규표현식 add_bottle 처리
-        # elif self._command == 'add':
-        #     command_file = 'param/add_bottle.json'
+        return command_file.get(self._command)
 
-        return command_file
 
 
     def ft_response(self, response, command_file) -> None:
