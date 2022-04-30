@@ -22,6 +22,10 @@ class Bot:
         self._message_id = message_id
     
     def check_json(self) -> None:
+        """
+        명령어를 받아서 json 형태로 반환해줌
+        없는 명령어일시 None 반환
+        """
         if self._command == '/table':
             command_file = answer.table
 
@@ -33,6 +37,8 @@ class Bot:
             command_file = answer.std_button
         elif self._command == 'bar':
             command_file = answer.bar_button
+        else:
+            command_file = None
 
         # TODO 정규표현식 add_bottle 처리
         # elif self._command == 'add':
