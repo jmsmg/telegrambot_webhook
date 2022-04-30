@@ -20,7 +20,8 @@ class Bot:
         self._command = command
         self._sender_name = sender_name
         self._message_id = message_id
-    
+
+
     def check_json(self) -> None:
         """
         명령어를 받아서 json 형태로 반환해줌
@@ -28,16 +29,16 @@ class Bot:
         """
         command_file = {
             '/table' : answer.table,
-            'vip' : answer.vip_button,
-            'boo' : answer.booth_button,
-            'std' : answer.std_button,
-            'bar' : answer.bar_button,
+            '/vip' : answer.vip_button,
+            '/boo' : answer.booth_button,
+            '/std' : answer.std_button,
+            '/bar' : answer.bar_button,
+            '/add' : answer.add_bottle,
             '0' : answer.cancel
             }
             
         # TODO 정규표현식 add_bottle 처리
         return command_file.get(self._command)
-
 
 
     def ft_response(self, response, command_file) -> None:

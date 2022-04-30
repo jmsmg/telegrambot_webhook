@@ -26,7 +26,9 @@ def lambda_handler(event, context):
         command = request["message"]["text"]
         sender_name = request["message"]["from"]["first_name"]
     
-    # command = request["message"]["text"]
+    # command 가공 부분
+    if len(command) == 5 and (command[:4] == '/vip' or command[:4] == '/boo' or command[:4] == '/std' or command[:4] == '/bar'):
+        command = '/add'
 
     bot = Bot(URL, command, sender_name, message_id)
 
