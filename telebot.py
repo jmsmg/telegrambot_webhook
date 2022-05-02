@@ -12,7 +12,7 @@ _HEADERS = {'content-type' : 'application/json'}
 _CONNECTION = http.client.HTTPSConnection(_TELEGRAM_API_HOST) # 호스트 주소 접속 객체 생성
 
 class Bot:
-    def __init__(self, URL, command, sender_name, message_id):
+    def __init__(self, URL, command, sender_name, message_id, table_number):
         """
         인스턴스 초기화
         """
@@ -20,7 +20,7 @@ class Bot:
         self._command = command
         self._sender_name = sender_name
         self._message_id = message_id
-
+        self._table_number = table_number
 
     def check_json(self) -> None:
         """
