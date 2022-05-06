@@ -36,7 +36,6 @@ def lambda_handler(event, context):
     if len(command) == 5 and (command[:4] == '/vip' or command[:4] == '/boo' or command[:4] == '/std' or command[:4] == '/bar'):
         table_number = command[1:]
         command = '/add'
-<<<<<<< HEAD
 
     command_file = {
         '/table' : answer.table,
@@ -49,12 +48,7 @@ def lambda_handler(event, context):
         }
     
     command_file.get(command)
-=======
-        
-    bot = Bot(URL, command, sender_name, message_id, table_number)
 
-    command_file = bot.check_json()
->>>>>>> e838db428581b75eab27482c53126270919d631a
 
     if request.get('callback_query') and command_file != None:
         response = '/editMessageText'
