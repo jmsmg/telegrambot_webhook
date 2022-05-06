@@ -1,10 +1,15 @@
 """
 메인함수로 직접 구동되는 lambda_handler부분
 """
-from telebot import Bot
+
+import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
 import os
+import answer
 
+TELEGRAM_API_HOST = "api.telegram.org" # 호스트 주소
+HEADERS = {'content-type' : 'application/json'}
+CONNECTION = http.client.HTTPSConnection(TELEGRAM_API_HOST) # 호스트 주소 접속 객체 생성
 TOKEN = os.environ['TOKEN']
 URL = f'/bot{TOKEN}'
 
@@ -30,14 +35,34 @@ def lambda_handler(event, context):
     if len(command) == 5 and (command[:4] == '/vip' or command[:4] == '/boo' or command[:4] == '/std' or command[:4] == '/bar'):
         command = '/add'
 
-    bot = Bot(URL, command, sender_name, message_id)
-
-    command_file = bot.check_json()
+    command_file = {
+        '/table' : answer.table,
+        '/vip' : answer.vip_button,
+        '/boo' : answer.booth_button,
+        '/std' : answer.std_button,
+        '/bar' : answer.bar_button,
+        '/add' : answer.add_bottle,
+        '0' : answer.cancel
+        }
+    
+    command_file.get(command)
 
     if request.get('callback_query') and command_file != None:
-        bot.ft_response('/editMessageText', command_file)
+        response = '/editMessageText'
     elif request.get('message') and command_file != None:
-        bot.ft_response("/sendMessage", command_file)
+        response = '/sendMessage'
+    
+    command_file["text"] = f'호출자 : {sender_name}'
+    command_file["message_id"] = message_id
+        
+    CONNECTION.request('POST', f'{URL}{response}', json.dumps(command_file) , HEADERS)
+
+    # 응답
+    res = CONNECTION.getresponse()
+            
+    # 강제 연결 종료 (비정상적인 요청 대비)#
+    CONNECTION.close()
+
 
     return {
         'statusCode': 200,
