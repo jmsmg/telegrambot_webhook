@@ -22,20 +22,15 @@ def lambda_handler(event, context):
     message_id = ""
     table_number = ""
 
-    # json 문법 체크
+    # json 문법을 체크하여 명령어가 들어오는지, 아니면 버튼을 눌렀을때인지 판별
     if request.get('callback_query'): # 버튼 눌렀을때
-        command = request["callback_query"]["data"]
+        data = request["callback_query"]["data"]
         message_id = request["callback_query"]["message"]["message_id"]
         sender_name = request["callback_query"]["from"]["first_name"]
 
     elif request.get('message'): # 메세지를 받았을때
-        command = request["message"]["text"]
+        data = request["message"]["text"]
         sender_name = request["message"]["from"]["first_name"]
-
-    # command 가공 부분
-    if len(command) == 5 and (command[:4] == '/vip' or command[:4] == '/boo' or command[:4] == '/std' or command[:4] == '/bar'):
-        table_number = command[1:]
-        command = '/add'
 
     command_file = {
         '/table' : answer.table,
@@ -43,25 +38,37 @@ def lambda_handler(event, context):
         '/boo' : answer.booth_button,
         '/std' : answer.std_button,
         '/bar' : answer.bar_button,
-        '/add' : answer.add_bottle,
         '0' : answer.cancel
         }
-    
-    command_file.get(command)
+
+    command_file = command_file.get(data)
+
+    # command 가공 부분
+    if len(data) == 5 and (data[:4] == '/vip' or data[:4] == '/boo' or data[:4] == '/std' or data[:4] == '/bar'):
+        table_number = command[1:5]
+        command = '/add'
+    elif len(data) > 5 and (data[:4] == '/vip' or data[:4] == '/boo' or data[:4] == '/std' or data[:4] == '/bar'):
+        command_file = answer.transfer_json(table_number)
+        table_number = command[1:5]
+        add_bottle = data[6:]
+        command = '/add'
 
 
     if request.get('callback_query') and command_file != None:
         response = '/editMessageText'
     elif request.get('message') and command_file != None:
         response = '/sendMessage'
-    
-    command_file["text"] = f'호출자 : {sender_name}'
+
+    command_file["text"] = f'''호출자 : {sender_name}
+테이블 : {table_number}
+추가된 술 : {add_bottle} '''
+
     command_file["message_id"] = message_id
         
     CONNECTION.request('POST', f'{URL}{response}', json.dumps(command_file) , HEADERS)
 
     # 응답
-    res = CONNECTION.getresponse()
+    CONNECTION.getresponse()
             
     # 강제 연결 종료 (비정상적인 요청 대비)#
     CONNECTION.close()
@@ -70,4 +77,4 @@ def lambda_handler(event, context):
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
-    }
+        }
