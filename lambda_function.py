@@ -6,6 +6,7 @@ import http.client # HTTP 프로토콜의 클라이언트 역할
 import json
 import os
 import answer
+import table_db
 
 TELEGRAM_API_HOST = "api.telegram.org" # 호스트 주소
 HEADERS = {'content-type' : 'application/json'}
@@ -21,6 +22,7 @@ def lambda_handler(event, context):
     request = json.loads(event['body']) # 사용자에게서 들어오는 event['body']
     message_id = ""
     table_number = ""
+    add_bottle = ""
 
     # json 문법을 체크하여 명령어가 들어오는지, 아니면 버튼을 눌렀을때인지 판별
     if request.get('callback_query'): # 버튼 눌렀을때
@@ -38,21 +40,22 @@ def lambda_handler(event, context):
         '/boo' : answer.booth_button,
         '/std' : answer.std_button,
         '/bar' : answer.bar_button,
-        '0' : answer.cancel
+        '0' : answer.cancel,
+        '1' : answer.complete
         }
 
     command_file = command_file.get(data)
 
     # command 가공 부분
+    # 테이블 번호 눌렀을때
     if len(data) == 5 and (data[:4] == '/vip' or data[:4] == '/boo' or data[:4] == '/std' or data[:4] == '/bar'):
-        table_number = command[1:5]
-        command = '/add'
-    elif len(data) > 5 and (data[:4] == '/vip' or data[:4] == '/boo' or data[:4] == '/std' or data[:4] == '/bar'):
+        table_number = data[1:5]
         command_file = answer.transfer_json(table_number)
-        table_number = command[1:5]
+    # 바틀명 눌렀을떄
+    elif len(data) > 5 and (data[:4] == '/vip' or data[:4] == '/boo' or data[:4] == '/std' or data[:4] == '/bar'):
+        table_number = data[1:5]
+        command_file = answer.transfer_json(table_number)
         add_bottle = data[6:]
-        command = '/add'
-
 
     if request.get('callback_query') and command_file != None:
         response = '/editMessageText'
@@ -72,7 +75,6 @@ def lambda_handler(event, context):
             
     # 강제 연결 종료 (비정상적인 요청 대비)#
     CONNECTION.close()
-
 
     return {
         'statusCode': 200,
