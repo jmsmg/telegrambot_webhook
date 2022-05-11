@@ -40,11 +40,13 @@ def lambda_handler(event, context):
         '/boo' : answer.booth_button,
         '/std' : answer.std_button,
         '/bar' : answer.bar_button,
+        '/add' : answer.transfer_json(data[1:5]),
         '0' : answer.cancel,
-        '1' : answer.complete
+        '1' : answer.complete,
         }
 
     command_file = command_file.get(data)
+    print(command_file)
 
     # command 가공 부분
     # 테이블 번호 눌렀을때
@@ -59,14 +61,14 @@ def lambda_handler(event, context):
 
     if request.get('callback_query') and command_file != None:
         response = '/editMessageText'
+        command_file["message_id"] = message_id
     elif request.get('message') and command_file != None:
         response = '/sendMessage'
 
     command_file["text"] = f'''호출자 : {sender_name}
-테이블 : {table_number}
-추가된 술 : {add_bottle} '''
+테이블 : {table_number} 
+추가된 술 : {add_bottle} ''' # TODO 테이블 넘버(pk)에 일치하는 추가된 술 정보 출력하기
 
-    command_file["message_id"] = message_id
         
     CONNECTION.request('POST', f'{URL}{response}', json.dumps(command_file) , HEADERS)
 
